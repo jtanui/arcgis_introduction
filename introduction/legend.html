@@ -57,7 +57,7 @@
             });
 
             //Takes a URL of a feature service
-            var featureLayer = new FeatureLayer("https://services.arcgis.com/CmINIEzurW7Tagtl/arcgis/rest/services/NumberOfHospitalFacilitiesPerCounty/FeatureServer/0", {
+            var featureLayer = new FeatureLayer("https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/Landscape_Trees/FeatureServer/0", {
                 mode: FeatureLayer.MODE_ONDEMAND,
                 outFields: ["*"]
             });
@@ -67,7 +67,7 @@
 
             map.addLayer(featureLayer);
             
-            featureLayer.setDefinitionExpression("District='SAMBURU'");  
+            featureLayer.setDefinitionExpression("Tree_ID='103'");  
             
             //add basemap gallery
             var toggle = new BasemapToggle({
