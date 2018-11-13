@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>FeatureLayer</title>
+
+<link rel="stylesheet" href="https://js.arcgis.com/3.26/esri/css/esri.css">
+<script src="https://js.arcgis.com/3.26/"></script>
+
+<style>
+html, body, #map {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+}
+</style>
+
+<script>
+require([
+    "esri/map","esri/tasks/query","esri/geometry/Extent","esri/layers/FeatureLayer",
+    "esri/tasks/QueryTask",
+    "dojo/domReady!"
+  ],
+  function(
+    Map, Query,Extent,FeatureLayer, QueryTask
+  ) {
+
+    var initialExtent = new esri.geometry.Extent({"xmin": 3262465.81, "ymin": -340374.25, "xmax": 4890268.76, "ymax": 393421.22, "spatialReference": {"wkid": 102100}});
+            // Create map
+            var map = new Map("mapDiv", {
+                basemap: "streets-navigation-vector",
+                center: [36, -0.1],
+                extent: initialExtent,
+                zoom: 5
+                ,
+            });
+            //Call a function when map has successfully loaded
+            map.on("load", load_defaults);
+            //remove loader on map load
+            function load_defaults(evt)
+            {
+
+               
+            }
+
+    /****************************************************************
+     * Add feature layer - A FeatureLayer at minimum should point
+     * to a URL to a feature service or point to a feature collection 
+     * object.
+     ***************************************************************/
+
+    // Carbon storage of trees in Warren Wilson College.
+  var featureLayer = new FeatureLayer("http://services.arcgis.com/CmINIEzurW7Tagtl/arcgis/rest/services/Flood/FeatureServer/2");
+
+    map.addLayer(featureLayer);
+	
+	var queryTask = new QueryTask("http://services.arcgis.com/CmINIEzurW7Tagtl/arcgis/rest/services/Flood/FeatureServer/2");
+                var query = new Query();
+                query.returnGeometry = true;
+                query.outFields = ["*"];
+                query.where = "CAW = 'SOLAI'";
+                queryTask.execute(query, showResults);
+
+                function showResults(results) {
+
+                    var resultCount = results.features.length;
+
+                    for (var i = 0; i < resultCount; i++) {
+                        //Zoom to line extent
+
+                        var geom = results.features[i].geometry;
+                        //Zoom to line extent
+                        map.setExtent(geom.getExtent().expand(2));
+
+
+                    }
+                }
+
+  });
+</script>
+</head>
+
+<body>
+  <div id="mapDiv"></div>
+</body>
+
+</html>
