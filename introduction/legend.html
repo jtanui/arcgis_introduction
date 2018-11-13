@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+    <title>Create Map and add a dynamic layer</title>
+    <link rel="stylesheet" href="https://js.arcgis.com/3.26/esri/css/esri.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+    <style>
+      html, body, #mapDiv{
+        padding: 0;
+        margin: 0;
+        height: 100%;
+      }
+      #BasemapToggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 50;
+    }
+
+    </style>
+  </head>
+  <body>
+    <div class="container">
+        <br><br>
+        <div class="col-md-3">
+            
+            <div id="legendDiv"></div>
+        </div>
+        <div class="col-md-9">
+        <div id="mapDiv">
+            <div id="BasemapToggle"></div>
+        </div>
+        </div>
+    </div>
+  </body>
+<!-- Optional theme -->
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://js.arcgis.com/3.26/"></script>
+<script>
+    var map;
+
+    require([
+        "esri/map", "esri/dijit/Legend", "esri/request", "esri/geometry/Extent", "esri/dijit/BasemapToggle","esri/layers/FeatureLayer"
+    ], function (Map, Legend, esriRequest, Extent, BasemapToggle, FeatureLayer) {
+
+            //Create initial extent of the map
+            var initialExtent = new esri.geometry.Extent({ "xmin": 2580446.93, "ymin": -660237.62, "xmax": 5877634.58, "ymax": 807353.33, "spatialReference": { "wkid": 102100 } });
+
+            map = new Map("mapDiv", {
+                basemap: "hybrid",
+                extent: initialExtent,
+            });
+
+            //Takes a URL of a feature service
+            var featureLayer = new FeatureLayer("https://services.arcgis.com/CmINIEzurW7Tagtl/arcgis/rest/services/NumberOfHospitalFacilitiesPerCounty/FeatureServer/0", {
+                mode: FeatureLayer.MODE_ONDEMAND,
+                outFields: ["*"]
+            });
+
+             
+            
+
+            map.addLayer(featureLayer);
+            
+            featureLayer.setDefinitionExpression("District='SAMBURU'");  
+            
+            //add basemap gallery
+            var toggle = new BasemapToggle({
+            map: map,
+            basemap: "satellite"
+            }, "BasemapToggle");
+            
+            toggle.startup();
+
+
+            //add the legend
+            var legendDijit = new Legend({
+                map: map
+            }, "legendDiv");
+            
+            legendDijit.startup();
+        });
+        </script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        </html>
