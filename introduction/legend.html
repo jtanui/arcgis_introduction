@@ -1,97 +1,59 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
-    <title>Create Map and add a dynamic layer</title>
-    <link rel="stylesheet" href="https://js.arcgis.com/3.26/esri/css/esri.css"/>
-    <style>
-     
-      #BasemapToggle {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      z-index: 50;
-    }
-    
-      #legendDiv {
-      position: absolute;
-       padding: 0;
-       margin: 0;
-       height: 20%;
-      
-    }
-      #mapDiv {
-      position: absolute;
-       padding: 0;
-       margin: 0;
-       height: 80%;
-      
-    }
-
-    </style>
-  </head>
-  <body>
-    <div class="container">
-        <br><br>
-        
-            
-        <div id="legendDiv"></div>
-       
-        <div id="mapDiv">
-            <div id="BasemapToggle"></div>
-        </div>
-        
-    </div>
-  </body>
-<!-- Optional theme -->
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Introduction</title>
+<!--Reference libraries -->
+<link rel="stylesheet" href="https://js.arcgis.com/3.26/esri/css/esri.css">
 <script src="https://js.arcgis.com/3.26/"></script>
+
+<style>
+html, body, #map {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+}
+</style>
+
 <script>
-    var map;
+ //Load Modules
+require(["esri/map", "esri/dijit/Legend", "esri/layers/FeatureLayer","dojo/domReady!"],function(Map,Legend,FeatureLayer) {
 
-    require([
-        "esri/map", "esri/dijit/Legend", "esri/request", "esri/geometry/Extent", "esri/dijit/BasemapToggle","esri/layers/FeatureLayer"
-    ], function (Map, Legend, esriRequest, Extent, BasemapToggle, FeatureLayer) {
+    var map = new Map("map", {
+      basemap: "hybrid",
+      center: [-82.44109, 35.6122],
+      zoom: 17
+    });
 
-            //Create initial extent of the map
-            var initialExtent = new esri.geometry.Extent({ "xmin": 2580446.93, "ymin": -660237.62, "xmax": 5877634.58, "ymax": 807353.33, "spatialReference": { "wkid": 102100 } });
+    /****************************************************************
+     * Add feature layer - A FeatureLayer at minimum should point
+     * to a URL to a feature service or point to a feature collection 
+     * object.
+     ***************************************************************/
 
-            map = new Map("mapDiv", {
-                basemap: "hybrid",
-                extent: initialExtent,
-            });
-
-            //Takes a URL of a feature service
-            var featureLayer = new FeatureLayer("https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/Landscape_Trees/FeatureServer/0", {
-                mode: FeatureLayer.MODE_ONDEMAND,
-                outFields: ["*"]
-            });
-
-             
-            
-
-            map.addLayer(featureLayer);
-            
-            featureLayer.setDefinitionExpression("Tree_ID='103'");  
-            
-            //add basemap gallery
-            var toggle = new BasemapToggle({
-            map: map,
-            basemap: "satellite"
-            }, "BasemapToggle");
-            
-            toggle.startup();
-
-
-            //add the legend
-            var legendDijit = new Legend({
+    // Carbon storage of trees in Warren Wilson College.
+    var featureLayer = new FeatureLayer("https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/Landscape_Trees/FeatureServer/0");
+    map.addLayer(featureLayer);
+    featureLayer.setDefinitionExpression("Tree_ID='103'");  
+	
+	 //add the legend
+    var legendDijit = new Legend({
                 map: map
             }, "legendDiv");
             
-            legendDijit.startup();
-        });
-        </script>
-     
-        </html>
+    legendDijit.startup();
+  
+    
+
+  });
+</script>
+</head>
+
+<body>
+   <div id="legendDiv"></div>
+  <div id="map"></div>
+</body>
+
+</html>
