@@ -27,12 +27,12 @@ require([
     Map, Query,Extent,FeatureLayer, QueryTask
   ) {
 
-    var initialExtent = new esri.geometry.Extent({"xmin": 3262465.81, "ymin": -340374.25, "xmax": 4890268.76, "ymax": 393421.22, "spatialReference": {"wkid": 102100}});
+    //var initialExtent = new esri.geometry.Extent({"xmin": 3262465.81, "ymin": -340374.25, "xmax": 4890268.76, "ymax": 393421.22, "spatialReference": {"wkid": 102100}});
             // Create map
             var map = new Map("mapDiv", {
                 basemap: "streets-navigation-vector",
                 center: [36, -0.1],
-                extent: initialExtent,
+                //extent: initialExtent,
                 zoom: 5
                 ,
             });
