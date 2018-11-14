@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <title>FeatureLayer</title>
+
+    <link rel="stylesheet" href="https://js.arcgis.com/3.26/esri/css/esri.css">
+    <script src="https://js.arcgis.com/3.26/"></script>
+
+    <style>
+        html,
+        body,
+        #map {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+
+    <script>
+        require([
+            "esri/map", "esri/geometry/Extent", "esri/layers/FeatureLayer",
+            "esri/tasks/query","esri/tasks/QueryTask", "dojo/dom", "dojo/on",
+            "dojo/domReady!"
+        ],
+            function (
+                Map, Extent, FeatureLayer, Query, QueryTask, dom, on
+            ) {
+
+                //var initialExtent = new esri.geometry.Extent({"xmin": 3262465.81, "ymin": -340374.25, "xmax": 4890268.76, "ymax": 393421.22, "spatialReference": {"wkid": 102100}});
+                // Create map
+                var map = new Map("mapDiv", {
+                    basemap: "streets",
+                    center: [36, -0.1],
+                    //extent: initialExtent,
+                    zoom: 5
+                    ,
+                });
+                //Call a function when map has successfully loaded
+                map.on("load", load_defaults);
+                //remove loader on map load
+                function load_defaults(evt) {
+
+                    var featureLayer = new FeatureLayer("http://services.arcgis.com/CmINIEzurW7Tagtl/arcgis/rest/services/Flood/FeatureServer/2");
+
+                    map.addLayer(featureLayer);
+
+                    on(dom.byId("search"), "click", function (evt) {
+
+                        var ward = document.getElementById("ward").value;
+                        var wardCapital = ward.toUpperCase();
+
+                    
+                        var queryTask = new QueryTask("http://services.arcgis.com/CmINIEzurW7Tagtl/arcgis/rest/services/Flood/FeatureServer/2");
+                        var query = new Query();
+                        query.returnGeometry = true;
+                        query.outFields = ["*"];
+                        query.where = "CAW = '" + wardCapital + "'";
+                        queryTask.execute(query, showResults);
+
+                        function showResults(results) {
+
+                            var resultCount = results.features.length;
+
+                            for (var i = 0; i < resultCount; i++) {
+                                //Zoom to line extent
+
+                                var geom = results.features[i].geometry;
+                                //Zoom to line extent
+                                map.setExtent(geom.getExtent().expand(2));
+
+
+                            }
+                        }
+
+                    });
+
+                }
+
+            });
+    </script>
+</head>
+<body>
+     WARDS :
+    <input type="text" placeholder="Type Ward" id="ward" name="ward">
+    <input type="button" id="search" value="SEARCH">
+    <div id="mapDiv"></div>
+</body>
+
+</html>
